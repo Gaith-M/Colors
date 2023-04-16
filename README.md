@@ -1,6 +1,6 @@
 # Colors
 ## A React Project
-Its goals:
+Its goals (as of 16/4/2023):
 - Create a random color palette generator 
 - Generate a palette using color harmonies 
 
