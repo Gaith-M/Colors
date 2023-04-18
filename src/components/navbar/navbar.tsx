@@ -1,10 +1,15 @@
+import Logo from "../logo/logo"
+
 const Navbar = () => {
   return (
-    <div className="h-[40px] bg-slate-100 drop-shadow-sm absolute top-0 left-0 right-0
-    flex justify-between items-center">
-        <span className="bg-green-300">Logo</span>
+    <div className="h-[50px] absolute top-0 left-0 right-0
+    flex justify-between items-center
+    px-2 sm:px-4 md:px-6 lg:px-12
+    bg-gray-50 drop-shadow-[0px_1px_12px_rgba(215,215,215,1)] bg-opacity-75">
 
-        <nav>
+        <Logo/>
+
+        <nav className="flex gap-3 text-sm text-gray-700 capitalize">
             <span>Link</span>
             <span>Link</span>
         </nav>

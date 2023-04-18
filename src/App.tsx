@@ -10,7 +10,7 @@ function App() {
           initial={{opacity: 0}}
           animate={{opacity: 1}}
           transition={{duration: 1.5}}
-          className='font-bold text-7xl text-center text-violet-600 mt-[40px]'>
+          className='font-bold text-7xl text-center text-violet-600 mt-[50px]'>
             React - Vite - Tailwindcss
           </motion.h1>
       </div>
