@@ -10,8 +10,7 @@ const Navbar = () => {
         <Logo/>
 
         <nav className="flex gap-3 text-sm text-gray-700 capitalize">
-            <span>Link</span>
-            <span>Link</span>
+            <a href="/about">About</a>
         </nav>
     </div>
   )
