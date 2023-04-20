@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom"
 import Logo from "../logo/logo"
 
 const Navbar = () => {
@@ -10,7 +11,7 @@ const Navbar = () => {
         <Logo/>
 
         <nav className="flex gap-3 text-sm text-gray-700 capitalize">
-            <a href="/about">About</a>
+            <Link to="/about">About</Link>
         </nav>
     </div>
   )

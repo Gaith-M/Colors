@@ -1,6 +1,7 @@
 const About = () => {
   return (
-    <div>About</div>
+    <div className="w-full min-h-screen bg-violet-200
+    flex items-center justify-center">About</div>
   )
 }
 
