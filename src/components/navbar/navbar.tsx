@@ -11,6 +11,7 @@ const Navbar = () => {
         <Logo/>
 
         <nav className="flex gap-3 text-sm text-gray-700 capitalize">
+            <Link to="/">Home</Link>
             <Link to="/about">About</Link>
         </nav>
     </div>
