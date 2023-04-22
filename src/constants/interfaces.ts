@@ -5,6 +5,8 @@ export interface Column_interface {
   light: number;
   handleChange: (id: string, val: number, name: string) => void;
   removeCol: (id: string) => void;
+  toggleLock: (id: string) => void;
+  locked: boolean;
 }
 
 export interface Color_interface {

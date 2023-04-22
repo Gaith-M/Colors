@@ -1,5 +1,4 @@
-import { nanoid } from "nanoid";
-import { Color_interface } from "../constants/interfaces";
+import { Color_interface, Column_interface } from "../constants/interfaces";
 
 export function generate_hue(): number {
   return Math.floor(Math.random() * 361);
@@ -25,21 +24,16 @@ export function construct_random_color(min: number, max: number): number[] {
   return [hue, saturation, light];
 }
 
-export let generate_random_colors = (col_num: number): Color_interface[] => {
-  let i = 0;
-  let arr: Color_interface[] = [];
-
-  while (i < col_num) {
-    const [hue, saturation, light] = construct_random_color(30, 80);
-    arr.push({
-      id: nanoid(),
-      hue,
-      saturation,
-      light,
-      locked: false,
-    });
-    i++;
-  }
-
-  return arr;
+export let generate_random_colors = (cols: Column_interface[]): Color_interface[] => {
+  return cols.map((el) => {
+    if (el.locked) {
+      return el;
+    }
+    return {
+      ...el,
+      hue: generate_hue(),
+      saturation: generate_percentage(35, 80),
+      light: generate_percentage(35, 80),
+    };
+  });
 };
