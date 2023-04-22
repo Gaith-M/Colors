@@ -1,3 +1,3 @@
-export const HUE = 'HUE';
-export const SATURATION = 'SATURATION';
-export const LIGHT = 'LIGHT';
+export const HUE = 'hue';
+export const SATURATION = 'saturation';
+export const LIGHT = 'light';

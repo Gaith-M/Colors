@@ -10,7 +10,7 @@ export interface Column_interface {
 export interface Color_interface {
   id: string;
   locked: boolean;
-  HUE: number;
-  LIGHT: number;
-  SATURATION: number;
+  hue: number;
+  light: number;
+  saturation: number;
 }
