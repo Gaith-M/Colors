@@ -2,12 +2,11 @@ import { useEffect, useState } from "react";
 import { generate_hue, generate_percentage, generate_random_colors } from "../utils";
 import Column from "../components/color-column";
 import { nanoid } from "nanoid";
-import { Color_interface } from "../constants/interfaces";
-import { HUE, LIGHT, SATURATION } from "../constants/enums";
 import { Column_interface } from "../constants/interfaces";
+import { HUE, LIGHT, SATURATION } from "../constants/enums";
 
 const Home = () => {
-  const [cols, setCols] = useState<Color_interface[]>([
+  const [cols, setCols] = useState<Column_interface[]>([
     {
       id: nanoid(),
       [HUE]: generate_hue(),
@@ -64,14 +63,22 @@ const Home = () => {
   }
 
   // Toggle lock
-  function toggle_lock(id: string) {
+  function toggle_lock(id: string, e?: any) {
+
+    let parent: HTMLButtonElement | null = null;
+
+    if(e?.target.tagName === 'svg') parent = e?.target.parentElement;
+    if(e?.target.tagName === 'path') parent = e?.target.parentElement.parentElement;
+
     const col_index = cols.findIndex((el) => el.id == id);
     let target_color = cols[col_index];
     setCols([...cols.slice(0, col_index), { ...target_color, locked: !target_color.locked }, ...cols.slice(col_index + 1)]);
+
+    parent?.blur();
   }
 
   return (
-    <div className="relative w-full min-h-screen flex items-end justify-center">
+    <div className="relative w-full min-h-screen flex items-end justify-center overflow-y-hidden">
       {cols.map((el) => (
         <Column key={el.id}
           id={el.id}
