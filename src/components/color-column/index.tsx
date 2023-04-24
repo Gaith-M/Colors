@@ -2,7 +2,6 @@ import { motion } from "framer-motion";
 import { Column_interface } from "../../constants/interfaces";
 import { HUE, LIGHT, SATURATION } from "../../constants/enums";
 import { determine_dark_or_light } from "../../utils";
-import { MouseEventHandler } from "react";
 
 const submenu_motion = {
   rest: { opacity: 0, duration: 0.3, y: 100, type: "tween" },
@@ -16,7 +15,7 @@ const submenu_motion = {
   },
 };
 
-const Column = ({ id, hue, saturation, light, handleChange, removeCol, locked, toggleLock }: Column_interface) => {
+const Column = ({ id, hue, saturation, light, handleChange, removeCol, locked, toggleLock, addColumn, currentCols }: Column_interface) => {
   return (
     <motion.div
       whileHover="hover"
@@ -124,6 +123,7 @@ const Column = ({ id, hue, saturation, light, handleChange, removeCol, locked, t
           <p className="mb-[6px]">Create A New Column</p>
           <div className="flex items-center justify-between">
             <button
+              onClick={addColumn && (() => addColumn({id, hue, saturation, light}, currentCols))}
               className={`w-[150px] h-[40px] capitalize
               flex items-center justify-center 
               rounded-[8px] border-2 border-[currentColor]
@@ -133,6 +133,7 @@ const Column = ({ id, hue, saturation, light, handleChange, removeCol, locked, t
               to my left
             </button>
             <button
+              onClick={addColumn && (() => addColumn({id, hue, saturation, light}, currentCols))}
               className={`w-[150px] h-[40px] capitalize
               flex items-center justify-center 
               rounded-[8px] border-2 border-[currentColor]
