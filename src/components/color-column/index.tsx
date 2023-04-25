@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Column_interface } from "../../constants/interfaces";
 import { HUE, LIGHT, SATURATION } from "../../constants/enums";
-import { determine_dark_or_light } from "../../utils";
+import { determine_dark_or_light, hsl_to_rgb, rgb_to_hex } from "../../utils";
 
 const submenu_motion = {
   rest: { opacity: 0, duration: 0.3, y: 100, type: "tween" },
@@ -16,6 +16,9 @@ const submenu_motion = {
 };
 
 const Column = ({ id, hue, saturation, light, handleChange, removeCol, locked, toggleLock, addColumn, currentCols }: Column_interface) => {
+  const { r, g, b } = hsl_to_rgb(hue, saturation, light);
+  const hex_value = rgb_to_hex(r, g, b);
+
   return (
     <motion.div
       whileHover="hover"
@@ -31,11 +34,7 @@ const Column = ({ id, hue, saturation, light, handleChange, removeCol, locked, t
         h-full max-h-[calc(100vh_-_50px)] overscroll-y-none
         capitalize font-bold"
       >
-        <button
-          tabIndex={-999}
-          className="absolute right-6 top-4 outline-none"
-          onClick={(event: any) => toggleLock && toggleLock(id, event)}
-        >
+        <button tabIndex={-999} className="absolute right-6 top-4 outline-none" onClick={(event: any) => toggleLock && toggleLock(id, event)}>
           <svg
             style={{ fill: determine_dark_or_light(light) }}
             className="transition-all duration-300"
@@ -55,13 +54,7 @@ const Column = ({ id, hue, saturation, light, handleChange, removeCol, locked, t
         {/* Delete Button */}
         {!locked && (
           <button tabIndex={-999} className="absolute right-1 top-16 translate-x-[-1px] group" onClick={() => removeCol && removeCol(id)}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 50 50"
-              width="50"
-              height="50"
-              style={{fill: determine_dark_or_light(light)}}
-            >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="50" height="50" style={{ fill: determine_dark_or_light(light) }}>
               <path
                 strokeWidth="0.5px"
                 d="M 15 4 C 14.476563 4 13.941406 4.183594 13.5625 4.5625 C 13.183594 4.941406 13 5.476563 13 6 L 13 7 L 7 7 L 7 9 L 8 9 L 8 25 C 8 26.644531 9.355469 28 11 28 L 23 28 C 24.644531 28 26 26.644531 26 25 L 26 9 L 27 9 L 27 7 L 21 7 L 21 6 C 21 5.476563 20.816406 4.941406 20.4375 4.5625 C 20.058594 4.183594 19.523438 4 19 4 Z M 15 6 L 19 6 L 19 7 L 15 7 Z M 10 9 L 24 9 L 24 25 C 24 25.554688 23.554688 26 23 26 L 11 26 C 10.445313 26 10 25.554688 10 25 Z M 12 12 L 12 23 L 14 23 L 14 12 Z M 16 12 L 16 23 L 18 23 L 18 12 Z M 20 12 L 20 23 L 22 23 L 22 12 Z"
@@ -120,28 +113,32 @@ const Column = ({ id, hue, saturation, light, handleChange, removeCol, locked, t
         </div>
 
         <div className={`mt-[24px] min-w-full ${light > 50 ? "text-gray-800" : "text-gray-100"}`}>
-          <p className="mb-[6px]">Create A New Column</p>
+          <p className="mb-[16px]">Create A New Column</p>
           <div className="flex items-center justify-between">
             <button
-              onClick={addColumn && (() => addColumn({id, hue, saturation, light}, currentCols))}
-              className={`w-[150px] h-[40px] capitalize
+              onClick={addColumn && (() => addColumn({ id, hue, saturation, light }, currentCols, true))}
+              className={`w-[50%] max-w-[125px] h-[40px] capitalize
               flex items-center justify-center 
               rounded-[8px] border-2 border-[currentColor]
               transition-colors duration-200 ${light > 50 ? "hover:bg-gray-800" : "hover:bg-gray-100"}
               ${light > 50 ? "hover:text-gray-100" : "hover:text-gray-800"}`}
             >
-              to my left
+              Shade
             </button>
             <button
-              onClick={addColumn && (() => addColumn({id, hue, saturation, light}, currentCols))}
-              className={`w-[150px] h-[40px] capitalize
+              onClick={addColumn && (() => addColumn({ id, hue, saturation, light }, currentCols, false))}
+              className={`w-[50%] max-w-[125px] h-[40px] capitalize
               flex items-center justify-center 
               rounded-[8px] border-2 border-[currentColor]
               transition-colors duration-200 ${light > 50 ? "hover:bg-gray-800" : "hover:bg-gray-100"}
               ${light > 50 ? "hover:text-gray-100" : "hover:text-gray-800"}`}
             >
-              to my right
+              Tint
             </button>
+          </div>
+
+          <div>
+            <p className={`${light > 50 ? "text-gray-800" : "text-gray-100"} uppercase text-center text-[24px] font-bold mt-[48px]`}>{hex_value}</p>
           </div>
         </div>
       </motion.div>

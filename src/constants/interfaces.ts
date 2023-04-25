@@ -7,7 +7,7 @@ export interface Column_interface {
   removeCol?: (id: string) => void;
   toggleLock?: (id: string, e?: MouseEvent) => void;
   handleChange?: (id: string, val: number, name: string) => void;
-  addColumn?: (caller_data: Column_basic_info, cols: Column_interface[]) => void | false;
+  addColumn?: (caller_data: Column_basic_info, cols: Column_interface[], before: boolean) => void | false;
   currentCols: Column_interface[]
 }
 
