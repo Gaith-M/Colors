@@ -1,4 +1,6 @@
 import { Column_interface } from "../constants/interfaces";
+import chroma from 'chroma-js';
+
 
 export function generate_hue(): number {
   return Math.floor(Math.random() * 361);
@@ -103,6 +105,7 @@ export function rgb_to_hex(r:number, g:number, b: number): string {
   const red = r.toString(16).padStart(2, "0");
   const green = g.toString(16).padStart(2, "0");
   const blue = b.toString(16).padStart(2, "0");
+  console.log(chroma('#fff').name())
 
   return `#${red}${green}${blue}`
 }
