@@ -16,10 +16,10 @@ As of now one feature is almost complete. the random color generator is almost d
 - User can quickly create shades and tints of current colors
 - Generated colors have their HEX value represented
 - Color value can be copied to clipboard using copy button
+- User can select between RGB, HEX, and HSL values to render color value
 
 Left to do:
 - I wanted to display color name in addition to its value, but I couldn't find any proper library that can name colors based on their values
 - Add color rearrange functionality so users can place colors in whichever order they want
-- Add other means to display color values in addition to HEX (HSL and RGB)
 
 By this the first feature would be completed

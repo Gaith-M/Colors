@@ -165,22 +165,69 @@ const Column = ({ id, hue, saturation, light, handleChange, removeCol, locked, t
               Create Tint
             </button>
 
-            <div className="">
-              <p>Show color value as</p>
-              <label htmlFor="HEX">
-                <span>HEX</span>
-                <input onChange={handle_change} type="checkbox" name="HEX" id="HEX" value="HEX" checked={colorValueType === "HEX"} />
-              </label>
+            <div className="min-w-full">
+              <p className="mb-[8px]">Show color value as</p>
+              <div className="flex justify-between items-center">
+                <label
+                  htmlFor={`${id}-HEX`}
+                  className={`w-[50%] max-w-[125px] h-[40px] capitalize
+                  flex items-center justify-center 
+                  rounded-[8px] border-2 border-[currentColor]
+                  transition-colors duration-200 ${light > 50 ? "hover:bg-gray-800" : "hover:bg-gray-100"}
+                  ${light > 50 ? "hover:text-gray-100" : "hover:text-gray-800"}`}
+                >
+                  <input
+                    onChange={handle_change}
+                    type="checkbox"
+                    name="HEX"
+                    id={`${id}-HEX`}
+                    value="HEX"
+                    checked={colorValueType === "HEX"}
+                    className="absolute left-[99999px] appearance-none peer"
+                  />
+                  <span>HEX</span>
+                </label>
 
-              <label htmlFor="HEX">
-                <span>RGB</span>
-                <input onChange={handle_change} type="checkbox" name="RGB" id="RGB" value="RGB" checked={colorValueType === "RGB"} />
-              </label>
+                <label
+                  htmlFor={`${id}-RGB`}
+                  className={`w-[50%] max-w-[125px] h-[40px] capitalize
+                  flex items-center justify-center 
+                  rounded-[8px] border-2 border-[currentColor]
+                  transition-colors duration-200 ${light > 50 ? "hover:bg-gray-800" : "hover:bg-gray-100"}
+                  ${light > 50 ? "hover:text-gray-100" : "hover:text-gray-800"}`}
+                >
+                  <span>RGB</span>
+                  <input
+                    className="absolute left-[99999px] appearance-none peer"
+                    onChange={handle_change}
+                    type="checkbox"
+                    name="RGB"
+                    id={`${id}-RGB`}
+                    value="RGB"
+                    checked={colorValueType === "RGB"}
+                  />
+                </label>
 
-              <label htmlFor="HEX">
-                <span>HSL</span>
-                <input onChange={handle_change} type="checkbox" name="HSL" id="HSL" value="HSL" checked={colorValueType === "HSL"} />
-              </label>
+                <label
+                  htmlFor={`${id}-HSL`}
+                  className={`w-[50%] max-w-[125px] h-[40px] capitalize
+                  flex items-center justify-center 
+                  rounded-[8px] border-2 border-[currentColor]
+                  transition-colors duration-200 ${light > 50 ? "hover:bg-gray-800" : "hover:bg-gray-100"}
+                  ${light > 50 ? "hover:text-gray-100" : "hover:text-gray-800"}`}
+                >
+                  <span>HSL</span>
+                  <input
+                    className="absolute left-[99999px] appearance-none peer"
+                    onChange={handle_change}
+                    type="checkbox"
+                    name="HSL"
+                    id={`${id}-HSL`}
+                    value="HSL"
+                    checked={colorValueType === "HSL"}
+                  />
+                </label>
+              </div>
             </div>
 
             <button
