@@ -4,6 +4,7 @@
 - Color palette generator utilizing color harmonies
 
 **The aim of this project is to advance my React skills and become more familiar with the library and its ecosystem**
+**I'm very inspired by the website Coolors.co, and it's the reason why I've chose to build this project**
 This repo only contains the frontend of the project
 
 **27/4/2023**
@@ -14,11 +15,11 @@ As of now one feature is almost complete. the random color generator is almost d
 - Colors can be edited ( for the time being )
 - User can quickly create shades and tints of current colors
 - Generated colors have their HEX value represented
+- Color value can be copied to clipboard using copy button
 
 Left to do:
 - I wanted to display color name in addition to its value, but I couldn't find any proper library that can name colors based on their values
 - Add color rearrange functionality so users can place colors in whichever order they want
 - Add other means to display color values in addition to HEX (HSL and RGB)
-- Add copy to clipboard functionality to facilitate copying color values
 
 By this the first feature would be completed

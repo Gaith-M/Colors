@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Column_interface } from "../../constants/interfaces";
 import { HUE, LIGHT, SATURATION } from "../../constants/enums";
 import { determine_dark_or_light, hsl_to_rgb, rgb_to_hex } from "../../utils";
+import { ChangeEvent, FormEvent, useState } from "react";
 
 const submenu_motion = {
   rest: { opacity: 0, duration: 0.3, y: 100, type: "tween" },
@@ -16,8 +17,37 @@ const submenu_motion = {
 };
 
 const Column = ({ id, hue, saturation, light, handleChange, removeCol, locked, toggleLock, addColumn, currentCols }: Column_interface) => {
+  const [showToast, setShowToast] = useState(false);
+  const [colorValueType, setColorValueType] = useState<"HEX" | "RGB" | "HSL">("HEX");
+
   const { r, g, b } = hsl_to_rgb(hue, saturation, light);
-  const hex_value = rgb_to_hex(r, g, b);
+
+  const color_values = {
+    HEX: rgb_to_hex(r, g, b),
+    HSL: `hsl(${hue}, ${saturation}%, ${light}%)`,
+    RGB: `rgb(${r}, ${g}, ${b})`,
+  };
+
+  const copy_to_clipboard = (text: string) => {
+    navigator.clipboard
+      .writeText(text)
+      .then(
+        () => {
+          setShowToast(true);
+          let id = setTimeout(() => {
+            setShowToast(false);
+          }, 3000);
+        },
+        (err) => console.log("failed", err)
+      )
+      .catch((err) => console.log(err));
+  };
+
+  const handle_change = ({ target }: ChangeEvent<HTMLInputElement>) => {
+    if (target.value === "HEX") setColorValueType("HEX");
+    if (target.value === "RGB") setColorValueType("RGB");
+    if (target.value === "HSL") setColorValueType("HSL");
+  };
 
   return (
     <motion.div
@@ -113,8 +143,7 @@ const Column = ({ id, hue, saturation, light, handleChange, removeCol, locked, t
         </div>
 
         <div className={`mt-[24px] min-w-full ${light > 50 ? "text-gray-800" : "text-gray-100"}`}>
-          <p className="mb-[16px]">Create A New Column</p>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col items-center justify-between gap-[24px]">
             <button
               onClick={addColumn && (() => addColumn({ id, hue, saturation, light }, currentCols, true))}
               className={`w-[50%] max-w-[125px] h-[40px] capitalize
@@ -123,7 +152,7 @@ const Column = ({ id, hue, saturation, light, handleChange, removeCol, locked, t
               transition-colors duration-200 ${light > 50 ? "hover:bg-gray-800" : "hover:bg-gray-100"}
               ${light > 50 ? "hover:text-gray-100" : "hover:text-gray-800"}`}
             >
-              Shade
+              Create Shade
             </button>
             <button
               onClick={addColumn && (() => addColumn({ id, hue, saturation, light }, currentCols, false))}
@@ -133,12 +162,44 @@ const Column = ({ id, hue, saturation, light, handleChange, removeCol, locked, t
               transition-colors duration-200 ${light > 50 ? "hover:bg-gray-800" : "hover:bg-gray-100"}
               ${light > 50 ? "hover:text-gray-100" : "hover:text-gray-800"}`}
             >
-              Tint
+              Create Tint
+            </button>
+
+            <div className="">
+              <p>Show color value as</p>
+              <label htmlFor="HEX">
+                <span>HEX</span>
+                <input onChange={handle_change} type="checkbox" name="HEX" id="HEX" value="HEX" checked={colorValueType === "HEX"} />
+              </label>
+
+              <label htmlFor="HEX">
+                <span>RGB</span>
+                <input onChange={handle_change} type="checkbox" name="RGB" id="RGB" value="RGB" checked={colorValueType === "RGB"} />
+              </label>
+
+              <label htmlFor="HEX">
+                <span>HSL</span>
+                <input onChange={handle_change} type="checkbox" name="HSL" id="HSL" value="HSL" checked={colorValueType === "HSL"} />
+              </label>
+            </div>
+
+            <button
+              disabled={showToast}
+              onClick={() => copy_to_clipboard(color_values[colorValueType])}
+              className={`w-[50%] max-w-[125px] h-[40px] capitalize
+              flex items-center justify-center 
+              rounded-[8px] border-2 border-[currentColor]
+              transition-colors duration-200 ${light > 50 ? "hover:bg-gray-800" : "hover:bg-gray-100"}
+              ${light > 50 ? "hover:text-gray-100" : "hover:text-gray-800"}`}
+            >
+              {showToast ? "Copied!" : "Copy Value"}
             </button>
           </div>
 
           <div>
-            <p className={`${light > 50 ? "text-gray-800" : "text-gray-100"} uppercase text-center text-[24px] font-bold mt-[48px]`}>{hex_value}</p>
+            <p className={`${light > 50 ? "text-gray-800" : "text-gray-100"} uppercase text-center text-[24px] font-bold mt-[24px]`}>
+              {color_values[colorValueType]}
+            </p>
           </div>
         </div>
       </motion.div>
