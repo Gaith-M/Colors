@@ -5,6 +5,9 @@ import { nanoid } from "nanoid";
 import { Column_basic_info, Column_interface } from "../constants/interfaces";
 import { HUE, LIGHT, SATURATION } from "../constants/enums";
 
+import { DndContext, closestCenter, PointerSensor, KeyboardSensor, useSensors, useSensor } from "@dnd-kit/core";
+import { arrayMove, sortableKeyboardCoordinates, SortableContext, horizontalListSortingStrategy } from "@dnd-kit/sortable";
+import { restrictToHorizontalAxis, restrictToParentElement } from "@dnd-kit/modifiers";
 const Home = () => {
   const [cols, setCols] = useState<Column_interface[]>([
     {
@@ -30,6 +33,8 @@ const Home = () => {
     },
   ]);
 
+  const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
+
   useEffect(() => {
     if (!window) return;
     document.addEventListener("keypress", event_handler);
@@ -40,6 +45,19 @@ const Home = () => {
     if (e.code === "Space") setCols(generate_random_colors(cols));
   }
 
+  function handleDragEnd(event: any) {
+    const { active, over } = event;
+
+    if (active.id !== over.id) {
+      setCols((items) => {
+        const oldIndex = items.findIndex((el) => el.id === active.id);
+        const newIndex = items.findIndex((el) => el.id === over.id);
+
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
+  }
+
   // Add a new column
   function add_col(caller_data: Column_basic_info, current_cols: Column_interface[], before: boolean): void | false {
     if (cols.length >= 6) return false;
@@ -47,9 +65,8 @@ const Home = () => {
     let variable_value = caller_data.light;
     let caller_index = current_cols?.findIndex((el) => el.id === caller_data.id);
 
-
-    if(before) variable_value = variable_value < 5 ?  0 : variable_value - 5;
-    if(!before) variable_value = variable_value > 95 ?  100 : variable_value + 5;
+    if (before) variable_value = variable_value < 5 ? 0 : variable_value - 5;
+    if (!before) variable_value = variable_value > 95 ? 100 : variable_value + 5;
 
     let new_color: Column_interface = {
       ...caller_data,
@@ -58,7 +75,6 @@ const Home = () => {
       light: variable_value,
       currentCols: current_cols,
     };
-
 
     if (before) return setCols([...current_cols.slice(0, caller_index), new_color, cols[caller_index], ...current_cols.slice(caller_index + 1)]);
     return setCols([...current_cols.slice(0, caller_index), cols[caller_index], new_color, ...current_cols.slice(caller_index + 1)]);
@@ -95,21 +111,30 @@ const Home = () => {
 
   return (
     <div className="relative w-full min-h-screen flex items-end justify-center overflow-y-hidden">
-      {cols.map((el) => (
-        <Column
-          key={el.id}
-          id={el.id}
-          hue={el.hue}
-          light={el.light}
-          locked={el.locked}
-          saturation={el.saturation}
-          removeCol={remove_col}
-          toggleLock={toggle_lock}
-          handleChange={handle_change}
-          addColumn={add_col}
-          currentCols={cols}
-        />
-      ))}
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+        modifiers={[restrictToHorizontalAxis, restrictToParentElement]}
+      >
+        <SortableContext items={cols} strategy={horizontalListSortingStrategy}>
+          {cols.map((el) => (
+            <Column
+              key={el.id}
+              id={el.id}
+              hue={el.hue}
+              light={el.light}
+              locked={el.locked}
+              saturation={el.saturation}
+              removeCol={remove_col}
+              toggleLock={toggle_lock}
+              handleChange={handle_change}
+              addColumn={add_col}
+              currentCols={cols}
+            />
+          ))}
+        </SortableContext>
+      </DndContext>
     </div>
   );
 };
