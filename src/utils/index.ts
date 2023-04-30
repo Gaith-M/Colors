@@ -41,7 +41,7 @@ export let generate_random_colors = (cols: Column_interface[]): Column_interface
 
 
 export function determine_dark_or_light(light_value: number) {
-  return light_value > 50? '#333' : '#fff'
+  return light_value > 60? '#161616' : '#fff'
 }
 
 

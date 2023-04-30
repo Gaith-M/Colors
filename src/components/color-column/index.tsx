@@ -4,7 +4,7 @@ import { HUE, LIGHT, SATURATION } from "../../constants/enums";
 import { determine_dark_or_light, hsl_to_rgb, rgb_to_hex } from "../../utils";
 import { ChangeEvent, useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
-import {CSS} from '@dnd-kit/utilities'
+import { CSS } from "@dnd-kit/utilities";
 
 const submenu_motion = {
   rest: { opacity: 0, duration: 0.3, y: 100, type: "tween" },
@@ -19,12 +19,11 @@ const submenu_motion = {
 };
 
 const Column = ({ id, hue, saturation, light, handleChange, removeCol, locked, toggleLock, addColumn, currentCols }: Column_interface) => {
-
-  const {attributes, listeners, setNodeRef, transform, transition} = useSortable({ id })
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
   const style = {
     transform: CSS.Transform.toString(transform),
-    transition
-  }
+    transition,
+  };
 
   const [showToast, setShowToast] = useState(false);
   const [colorValueType, setColorValueType] = useState<"HEX" | "RGB" | "HSL">("HEX");
@@ -61,11 +60,10 @@ const Column = ({ id, hue, saturation, light, handleChange, removeCol, locked, t
   return (
     <motion.div
       ref={setNodeRef}
-      {...attributes}
-      {...listeners}
       whileHover="hover"
       initial="rest"
       animate="rest"
+      transition={{ ease: "easeInOut", type: "tween" }}
       style={{ color: `hsla(${hue}, ${saturation}%, ${light}%, 1)`, backgroundColor: "currentcolor", ...style }}
       className="flex-1 h-[calc(100vh_-_50px)] flex flex-col items-center justify-center"
     >
@@ -152,6 +150,35 @@ const Column = ({ id, hue, saturation, light, handleChange, removeCol, locked, t
             max={100}
             onChange={({ target }) => handleChange(id, +target.value, LIGHT)}
           />
+        </div>
+
+        <div>
+          <button {...attributes} {...listeners}>
+            <svg
+              style={{ fill: determine_dark_or_light(light), stroke: determine_dark_or_light(light) }}
+              version="1.1"
+              id="Capa_1"
+              xmlns="http://www.w3.org/2000/svg"
+              width="35px"
+              height="35px"
+              viewBox="-35.87 -35.87 430.41 430.41"
+              strokeWidth="0.0035866599999999998"
+              transform="rotate(90)matrix(1, 0, 0, 1, 0, 0)"
+            >
+              <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+              <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round" stroke="#CCCCCC" strokeWidth="4.303991999999999"></g>
+              <g id="SVGRepo_iconCarrier">
+                {" "}
+                <g>
+                  {" "}
+                  <g>
+                    {" "}
+                    <polygon points="190.367,316.44 190.367,42.226 236.352,88.225 251.958,72.619 179.333,0 106.714,72.613 122.291,88.231 168.302,42.226 168.302,316.44 122.314,270.443 106.708,286.044 179.333,358.666 251.958,286.056 236.363,270.432 "></polygon>{" "}
+                  </g>{" "}
+                </g>{" "}
+              </g>
+            </svg>
+          </button>
         </div>
 
         <div className={`mt-[24px] min-w-full ${light > 50 ? "text-gray-800" : "text-gray-100"}`}>
