@@ -2,30 +2,21 @@ import { motion } from "framer-motion";
 import { Column_interface } from "../../constants/interfaces";
 import { HUE, LIGHT, SATURATION } from "../../constants/enums";
 import { determine_dark_or_light, hsl_to_rgb, rgb_to_hex } from "../../utils";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import {ChromePicker} from 'react-color';
-import CustomChromePicker from "../custom-chrome-picker";
+import { color_column_motion_config, fade_in_up } from "../../constants/motion_variants";
+import { color_column_container, color_column_menu_container } from "./styles";
 
-const submenu_motion = {
-  rest: { opacity: 0, duration: 0.3, y: 100, type: "tween" },
-  hover: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.3,
-      type: "tween",
-    },
-  },
-};
+import '@simonwep/pickr/dist/themes/nano.min.css';
+import Pickr from '@simonwep/pickr';
 
 const Column = ({ id, hue, saturation, light, handleChange, removeCol, locked, toggleLock, addColumn, currentCols }: Column_interface) => {
+
+  // Attributes for the sorting functionality
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
+  // Styles for the sorting functionality
+  const style = { transform: CSS.Transform.toString(transform), transition};
 
   const [showToast, setShowToast] = useState(false);
   const [colorValueType, setColorValueType] = useState<"HEX" | "RGB" | "HSL">("HEX");
@@ -57,23 +48,16 @@ const Column = ({ id, hue, saturation, light, handleChange, removeCol, locked, t
     if (target.value === "HSL") setColorValueType("HSL");
   };
 
+  const picker_ref = useRef(null)
+  useEffect(() => {}, [])
+  
+
   return (
-    <motion.div
-      ref={setNodeRef}
-      whileHover="hover"
-      initial="rest"
-      animate="rest"
-      transition={{ ease: "easeInOut", type: "tween" }}
-      style={{ color: `hsla(${hue}, ${saturation}%, ${light}%, 1)`, backgroundColor: "currentcolor", ...style }}
-      className="flex-1 h-[calc(100vh_-_50px)] flex flex-col items-center justify-center"
-    >
-      <motion.div
-        variants={submenu_motion}
-        className="p-4 flex flex-col flex-1 min-w-full items-center justify-center 
-        overflow-y-hidden relative bg-[#33333311]
-        h-full max-h-[calc(100vh_-_50px)] overscroll-y-none
-        capitalize font-bold"
-      >
+    <motion.div ref={setNodeRef} {...color_column_motion_config} className={color_column_container}
+      style={{ color: `hsla(${hue}, ${saturation}%, ${light}%, 1)`, backgroundColor: "currentcolor", ...style }}>
+
+      <motion.div variants={fade_in_up} className={color_column_menu_container}>
+
         <button tabIndex={-999} className="absolute right-6 top-4 outline-none" onClick={(event: any) => toggleLock && toggleLock(id, event)}>
           <svg
             style={{ fill: determine_dark_or_light(light) }}
@@ -189,6 +173,7 @@ const Column = ({ id, hue, saturation, light, handleChange, removeCol, locked, t
 
         <div className={`mt-[24px] min-w-full ${light > 50 ? "text-gray-800" : "text-gray-100"}`}>
           <div className="flex flex-col items-center justify-between gap-[24px]">
+
             <button
               onClick={addColumn && (() => addColumn({ id, hue, saturation, light }, currentCols, true))}
               className={`w-[50%] max-w-[125px] h-[40px] capitalize
@@ -335,9 +320,8 @@ const Column = ({ id, hue, saturation, light, handleChange, removeCol, locked, t
             </p>
           </div>
 
-          <div>
-            {/* <CustomChromePicker color={{h: 120, s: 60, l: 50, a: 1}} onChange={() => true}/> */}
-          </div>
+          <div className="picker"></div>
+
         </div>
       </motion.div>
     </motion.div>
