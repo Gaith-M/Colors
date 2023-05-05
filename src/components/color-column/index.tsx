@@ -1,25 +1,20 @@
 import { motion } from "framer-motion";
 import { Column_interface } from "../../constants/interfaces";
-import { HUE, LIGHT, SATURATION } from "../../constants/enums";
 import { determine_dark_or_light, hsl_to_rgb, rgb_to_hex } from "../../utils";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { color_column_motion_config, fade_in_up } from "../../constants/motion_variants";
 import { color_column_container, color_column_menu_container } from "./styles";
-
-import '@simonwep/pickr/dist/themes/nano.min.css';
-import Pickr from '@simonwep/pickr';
+import ColorPicker from "../color-picker";
 
 const Column = ({ id, hue, saturation, light, handleChange, removeCol, locked, toggleLock, addColumn, currentCols }: Column_interface) => {
-
   // Attributes for the sorting functionality
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
   // Styles for the sorting functionality
-  const style = { transform: CSS.Transform.toString(transform), transition};
+  const style = { transform: CSS.Transform.toString(transform), transition };
 
   const [showToast, setShowToast] = useState(false);
-  const [colorValueType, setColorValueType] = useState<"HEX" | "RGB" | "HSL">("HEX");
 
   const { r, g, b } = hsl_to_rgb(hue, saturation, light);
 
@@ -42,22 +37,15 @@ const Column = ({ id, hue, saturation, light, handleChange, removeCol, locked, t
       .catch((err) => console.log(err));
   };
 
-  const handle_change = ({ target }: ChangeEvent<HTMLInputElement>) => {
-    if (target.value === "HEX") setColorValueType("HEX");
-    if (target.value === "RGB") setColorValueType("RGB");
-    if (target.value === "HSL") setColorValueType("HSL");
-  };
-
-  const picker_ref = useRef(null)
-  useEffect(() => {}, [])
-  
 
   return (
-    <motion.div ref={setNodeRef} {...color_column_motion_config} className={color_column_container}
-      style={{ color: `hsla(${hue}, ${saturation}%, ${light}%, 1)`, backgroundColor: "currentcolor", ...style }}>
-
+    <motion.div
+      ref={setNodeRef}
+      {...color_column_motion_config}
+      className={color_column_container}
+      style={{ color: `hsla(${hue}, ${saturation}%, ${light}%, 1)`, backgroundColor: "currentcolor", ...style }}
+    >
       <motion.div variants={fade_in_up} className={color_column_menu_container}>
-
         <button tabIndex={-999} className="absolute right-6 top-4 outline-none" onClick={(event: any) => toggleLock && toggleLock(id, event)}>
           <svg
             style={{ fill: determine_dark_or_light(light) }}
@@ -87,53 +75,8 @@ const Column = ({ id, hue, saturation, light, handleChange, removeCol, locked, t
           </button>
         )}
 
-        <div className="w-full mb-[16px]">
-          <label htmlFor={HUE} className={`block mb-[6px] transition-colors duration-100 ${light > 50 ? "text-gray-800" : "text-gray-100"}`}>
-            {HUE}
-          </label>
-          <input
-            style={{ accentColor: "#333", appearance: "unset" }}
-            className="w-full rounded-md h-[16px] mb-[8px]"
-            type="range"
-            name={HUE}
-            value={hue}
-            step={0.1}
-            min={0}
-            max={360}
-            onChange={({ target }) => handleChange && handleChange(id, +target.value, HUE)}
-          />
-        </div>
-
-        <div className="w-full mb-[16px]">
-          <label htmlFor={SATURATION} className={`block mb-[6px] transition-colors duration-100 ${light > 50 ? "text-gray-800" : "text-gray-100"}`}>
-            {SATURATION}
-          </label>
-          <input
-            style={{ accentColor: "#333", appearance: "unset" }}
-            className="w-full rounded-md h-[16px] mb-[8px]"
-            type="range"
-            name={SATURATION}
-            value={saturation}
-            min={0}
-            max={100}
-            onChange={({ target }) => handleChange(id, +target.value, SATURATION)}
-          />
-        </div>
-
-        <div className="w-full mb-[16px]">
-          <label htmlFor={LIGHT} className={`block mb-[6px] transition-colors duration-100 ${light > 50 ? "text-gray-800" : "text-gray-100"}`}>
-            {LIGHT}
-          </label>
-          <input
-            style={{ accentColor: "#333", appearance: "unset" }}
-            className="w-full rounded-md h-[16px] mb-[8px]"
-            type="range"
-            name={LIGHT}
-            value={light}
-            min={0}
-            max={100}
-            onChange={({ target }) => handleChange(id, +target.value, LIGHT)}
-          />
+        <div>
+          <ColorPicker id={id} color_values={color_values} edit_values={handleChange}/>
         </div>
 
         <div>
@@ -173,97 +116,12 @@ const Column = ({ id, hue, saturation, light, handleChange, removeCol, locked, t
 
         <div className={`mt-[24px] min-w-full ${light > 50 ? "text-gray-800" : "text-gray-100"}`}>
           <div className="flex flex-col items-center justify-between gap-[24px]">
-
-            <button
-              onClick={addColumn && (() => addColumn({ id, hue, saturation, light }, currentCols, true))}
-              className={`w-[50%] max-w-[125px] h-[40px] capitalize
-              flex items-center justify-center 
-              rounded-[8px] border-2 border-[currentColor]
-              transition-colors duration-200 ${light > 50 ? "hover:bg-gray-800" : "hover:bg-gray-100"}
-              ${light > 50 ? "hover:text-gray-100" : "hover:text-gray-800"}`}
-            >
-              Create Shade
-            </button>
-            <button
-              onClick={addColumn && (() => addColumn({ id, hue, saturation, light }, currentCols, false))}
-              className={`w-[50%] max-w-[125px] h-[40px] capitalize
-              flex items-center justify-center 
-              rounded-[8px] border-2 border-[currentColor]
-              transition-colors duration-200 ${light > 50 ? "hover:bg-gray-800" : "hover:bg-gray-100"}
-              ${light > 50 ? "hover:text-gray-100" : "hover:text-gray-800"}`}
-            >
-              Create Tint
-            </button>
-
-            <div className="min-w-full">
-              <p className="mb-[8px]">Show color value as</p>
-              <div className="flex justify-between items-center">
-                <label
-                  htmlFor={`${id}-HEX`}
-                  className={`w-[50%] max-w-[125px] h-[40px] capitalize
-                  flex items-center justify-center 
-                  rounded-[8px] border-2 border-[currentColor]
-                  transition-colors duration-200 ${light > 50 ? "hover:bg-gray-800" : "hover:bg-gray-100"}
-                  ${light > 50 ? "hover:text-gray-100" : "hover:text-gray-800"}`}
-                >
-                  <input
-                    onChange={handle_change}
-                    type="checkbox"
-                    name="HEX"
-                    id={`${id}-HEX`}
-                    value="HEX"
-                    checked={colorValueType === "HEX"}
-                    className="absolute left-[99999px] appearance-none peer"
-                  />
-                  <span>HEX</span>
-                </label>
-
-                <label
-                  htmlFor={`${id}-RGB`}
-                  className={`w-[50%] max-w-[125px] h-[40px] capitalize
-                  flex items-center justify-center 
-                  rounded-[8px] border-2 border-[currentColor]
-                  transition-colors duration-200 ${light > 50 ? "hover:bg-gray-800" : "hover:bg-gray-100"}
-                  ${light > 50 ? "hover:text-gray-100" : "hover:text-gray-800"}`}
-                >
-                  <span>RGB</span>
-                  <input
-                    className="absolute left-[99999px] appearance-none peer"
-                    onChange={handle_change}
-                    type="checkbox"
-                    name="RGB"
-                    id={`${id}-RGB`}
-                    value="RGB"
-                    checked={colorValueType === "RGB"}
-                  />
-                </label>
-
-                <label
-                  htmlFor={`${id}-HSL`}
-                  className={`w-[50%] max-w-[125px] h-[40px] capitalize
-                  flex items-center justify-center 
-                  rounded-[8px] border-2 border-[currentColor]
-                  transition-colors duration-200 ${light > 50 ? "hover:bg-gray-800" : "hover:bg-gray-100"}
-                  ${light > 50 ? "hover:text-gray-100" : "hover:text-gray-800"}`}
-                >
-                  <span>HSL</span>
-                  <input
-                    className="absolute left-[99999px] appearance-none peer"
-                    onChange={handle_change}
-                    type="checkbox"
-                    name="HSL"
-                    id={`${id}-HSL`}
-                    value="HSL"
-                    checked={colorValueType === "HSL"}
-                  />
-                </label>
-              </div>
-            </div>
+            
 
             {/* START::Copy Button */}
             <button
               disabled={showToast}
-              onClick={() => copy_to_clipboard(color_values[colorValueType])}
+              onClick={() => copy_to_clipboard(color_values.HEX)}
               style={{ fill: determine_dark_or_light(light), stroke: determine_dark_or_light(light) }}
               className={`p-[6px] cursor-pointer rounded-md transition-colors duration-200 ${light > 60 ? "hover:bg-[#55555533]" : "hover:bg-[#eeeeee33]"}`}
             >
@@ -313,15 +171,6 @@ const Column = ({ id, hue, saturation, light, handleChange, removeCol, locked, t
             </button>
             {/* END::Copy Button */}
           </div>
-
-          <div>
-            <p className={`${light > 50 ? "text-gray-800" : "text-gray-100"} uppercase text-center text-[24px] font-bold mt-[24px]`}>
-              {color_values[colorValueType]}
-            </p>
-          </div>
-
-          <div className="picker"></div>
-
         </div>
       </motion.div>
     </motion.div>

@@ -1,6 +1,5 @@
 import { Column_interface } from "../constants/interfaces";
 
-
 export function generate_hue(): number {
   return Math.floor(Math.random() * 361);
 }
@@ -39,13 +38,11 @@ export let generate_random_colors = (cols: Column_interface[]): Column_interface
   });
 };
 
-
 export function determine_dark_or_light(light_value: number) {
-  return light_value > 60? '#161616' : '#fff'
+  return light_value > 60 ? "#161616" : "#fff";
 }
 
-
-export function hsl_to_rgb(h: number, s: number, l:number): {r: number, g:number, b: number} {
+export function hsl_to_rgb(h: number, s: number, l: number): { r: number; g: number; b: number } {
   // Convert hue to range [0, 360]
   h = h % 360;
   if (h < 0) {
@@ -100,11 +97,65 @@ export function hsl_to_rgb(h: number, s: number, l:number): {r: number, g:number
   return { r, g, b };
 }
 
-
-export function rgb_to_hex(r:number, g:number, b: number): string {
+export function rgb_to_hex(r: number, g: number, b: number): string {
   const red = r.toString(16).padStart(2, "0");
   const green = g.toString(16).padStart(2, "0");
   const blue = b.toString(16).padStart(2, "0");
 
-  return `#${red}${green}${blue}`
+  return `#${red}${green}${blue}`;
+}
+
+export function hexToHSL(hex: string) {
+  // Convert hex to RGB
+  const rgb = hexToRGB(hex);
+
+  // Convert RGB to HSL
+  const hsl = rgb && RGBToHSL(rgb.r, rgb.g, rgb.b);
+
+  return hsl ? hsl : { h: 0, s: 0, l: 0 };
+}
+
+export function hexToRGB(hex: string) {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result
+    ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16),
+      }
+    : null;
+}
+
+export function RGBToHSL(r: number, g: number, b: number) {
+  (r /= 255), (g /= 255), (b /= 255);
+  const max = Math.max(r, g, b),
+    min = Math.min(r, g, b);
+  let h,
+    s,
+    l = (max + min) / 2;
+
+  if (max === min) {
+    h = s = 0; // achromatic
+  } else {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r:
+        h = (g - b) / d + (g < b ? 6 : 0);
+        break;
+      case g:
+        h = (b - r) / d + 2;
+        break;
+      case b:
+        h = (r - g) / d + 4;
+        break;
+    }
+    if (h) {
+      h /= 6;
+    } else {
+      h = 0;
+    }
+  }
+
+  return { h: h * 360, s: s * 100, l: l * 100 };
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { generate_hue, generate_percentage, generate_random_colors } from "../utils";
+import { generate_hue, generate_percentage, generate_random_colors, hexToHSL } from "../utils";
 import Column from "../components/color-column";
 import { nanoid } from "nanoid";
 import { Column_basic_info, Column_interface } from "../constants/interfaces";
@@ -8,6 +8,7 @@ import { HUE, LIGHT, SATURATION } from "../constants/enums";
 import { DndContext, closestCenter, PointerSensor, KeyboardSensor, useSensors, useSensor } from "@dnd-kit/core";
 import { arrayMove, sortableKeyboardCoordinates, SortableContext, horizontalListSortingStrategy } from "@dnd-kit/sortable";
 import { restrictToHorizontalAxis, restrictToParentElement } from "@dnd-kit/modifiers";
+
 const Home = () => {
   const [cols, setCols] = useState<Column_interface[]>([
     {
@@ -89,10 +90,24 @@ const Home = () => {
   }
 
   // Edit column state
-  function handle_change(id: string, val: number, type: string) {
+  // function handle_change(id: string, val: number, type: string) {
+  //   const col_index = cols.findIndex((el) => el.id == id);
+  //   let target_color = cols[col_index];
+  //   setCols([...cols.slice(0, col_index), { ...target_color, [type]: val }, ...cols.slice(col_index + 1)]);
+  // }
+
+  // Edit column V2:
+  function handle_change(id: string, hex: string) {
+    // This function will receive the new value as HEX code
+    // It will then derive HSL elements from it
+    // finally it will replace the target column with the new column
+
+    // Get the index of the column to be edited
     const col_index = cols.findIndex((el) => el.id == id);
     let target_color = cols[col_index];
-    setCols([...cols.slice(0, col_index), { ...target_color, [type]: val }, ...cols.slice(col_index + 1)]);
+
+    const { h, s, l } = hexToHSL(hex);
+    setCols([...cols.slice(0, col_index), { ...target_color, hue: h, light: l, saturation: s }, ...cols.slice(col_index + 1)]);
   }
 
   // Toggle lock

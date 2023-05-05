@@ -580,6 +580,10 @@ video {
   display: flex;
 }
 
+.h-0 {
+  height: 0px;
+}
+
 .h-\[16px\] {
   height: 16px;
 }
@@ -606,6 +610,10 @@ video {
 
 .min-h-screen {
   min-height: 100vh;
+}
+
+.w-0 {
+  width: 0px;
 }
 
 .w-\[50\%\] {
@@ -802,6 +810,10 @@ video {
 .text-white {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+
+.opacity-0 {
+  opacity: 0;
 }
 
 .outline-none {

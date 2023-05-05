@@ -6,9 +6,9 @@ export interface Column_interface {
   saturation: number;
   removeCol?: (id: string) => void;
   toggleLock?: (id: string, e?: MouseEvent) => void;
-  handleChange?: (id: string, val: number, name: string) => void;
+  handleChange?: (id: string, hex: string) => void;
   addColumn?: (caller_data: Column_basic_info, cols: Column_interface[], before: boolean) => void | false;
-  currentCols: Column_interface[]
+  currentCols?: Column_interface[];
 }
 
 export interface Column_basic_info {
