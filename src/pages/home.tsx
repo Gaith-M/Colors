@@ -3,12 +3,16 @@ import { generate_hue, generate_percentage, generate_random_colors, hexToHSL } f
 import Column from "../components/color-column";
 import { nanoid } from "nanoid";
 import { Column_basic_info, Column_interface } from "../constants/interfaces";
-
 import { DndContext, closestCenter, PointerSensor, KeyboardSensor, useSensors, useSensor } from "@dnd-kit/core";
 import { arrayMove, sortableKeyboardCoordinates, SortableContext, horizontalListSortingStrategy } from "@dnd-kit/sortable";
 import { restrictToHorizontalAxis, restrictToParentElement } from "@dnd-kit/modifiers";
+import NewColumn from "../components/color-column/color-column";
 
 const Home = () => {
+  // DnD-Kit
+  const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
+
+
   const [cols, setCols] = useState<Column_interface[]>([
     {
       id: nanoid(),
@@ -33,7 +37,7 @@ const Home = () => {
     },
   ]);
 
-  const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
+  
 
   useEffect(() => {
     if (!window) return;
@@ -88,14 +92,7 @@ const Home = () => {
     setCols(cols.filter((el) => el.id !== id));
   }
 
-  // Edit column state
-  // function handle_change(id: string, val: number, type: string) {
-  //   const col_index = cols.findIndex((el) => el.id == id);
-  //   let target_color = cols[col_index];
-  //   setCols([...cols.slice(0, col_index), { ...target_color, [type]: val }, ...cols.slice(col_index + 1)]);
-  // }
 
-  // Edit column V2:
   function handle_change(id: string, hex: string) {
     // This function will receive the new value as HEX code
     // It will then derive HSL elements from it
@@ -133,24 +130,46 @@ const Home = () => {
       >
         <SortableContext items={cols} strategy={horizontalListSortingStrategy}>
           {cols.map((el) => (
-            <Column
+            <NewColumn
               key={el.id}
-              id={el.id}
-              hue={el.hue}
-              light={el.light}
-              locked={el.locked}
-              saturation={el.saturation}
-              removeCol={remove_col}
-              toggleLock={toggle_lock}
-              handleChange={handle_change}
-              addColumn={add_col}
-              currentCols={cols}
+              data={el}
+              handle_delete={remove_col}
+              handle_lock={toggle_lock}
+              handle_edit={handle_change}
             />
           ))}
         </SortableContext>
       </DndContext>
     </div>
   );
+  // return (
+  //   <div className="relative w-full min-h-screen flex items-end justify-center overflow-y-hidden">
+  //     <DndContext
+  //       sensors={sensors}
+  //       collisionDetection={closestCenter}
+  //       onDragEnd={handleDragEnd}
+  //       modifiers={[restrictToHorizontalAxis, restrictToParentElement]}
+  //     >
+  //       <SortableContext items={cols} strategy={horizontalListSortingStrategy}>
+  //         {cols.map((el) => (
+  //           <Column
+  //             key={el.id}
+  //             id={el.id}
+  //             hue={el.hue}
+  //             light={el.light}
+  //             locked={el.locked}
+  //             saturation={el.saturation}
+  //             removeCol={remove_col}
+  //             toggleLock={toggle_lock}
+  //             handleChange={handle_change}
+  //             addColumn={add_col}
+  //             currentCols={cols}
+  //           />
+  //         ))}
+  //       </SortableContext>
+  //     </DndContext>
+  //   </div>
+  // );
 };
 
 export default Home;

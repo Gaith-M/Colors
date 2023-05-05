@@ -17,3 +17,20 @@ export interface Column_basic_info {
   light: number;
   saturation: number;
 }
+
+// ------------------------------
+export interface Color_Interface {
+  id: string;
+  hue: number;
+  saturation: number;
+  light: number;
+  locked: boolean;
+}
+
+export interface Color_Column_Props {
+  data: Color_Interface;
+  handle_edit: (id: string, hex: string) => void;
+  handle_delete: (id: string) => void;
+  handle_lock: (id: string) => void;
+}
+// ------------------------------
