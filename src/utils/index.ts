@@ -39,7 +39,7 @@ export let generate_random_colors = (cols: Column_interface[]): Column_interface
 };
 
 export function determine_dark_or_light(light_value: number) {
-  return light_value > 60 ? "#161616" : "#fff";
+  return light_value > 60 ? "#262626" : "#fff";
 }
 
 export function hsl_to_rgb(h: number, s: number, l: number): { r: number; g: number; b: number } {

@@ -3,7 +3,6 @@ import { generate_hue, generate_percentage, generate_random_colors, hexToHSL } f
 import Column from "../components/color-column";
 import { nanoid } from "nanoid";
 import { Column_basic_info, Column_interface } from "../constants/interfaces";
-import { HUE, LIGHT, SATURATION } from "../constants/enums";
 
 import { DndContext, closestCenter, PointerSensor, KeyboardSensor, useSensors, useSensor } from "@dnd-kit/core";
 import { arrayMove, sortableKeyboardCoordinates, SortableContext, horizontalListSortingStrategy } from "@dnd-kit/sortable";
@@ -13,23 +12,23 @@ const Home = () => {
   const [cols, setCols] = useState<Column_interface[]>([
     {
       id: nanoid(),
-      [HUE]: generate_hue(),
-      [SATURATION]: generate_percentage(75, 50),
-      [LIGHT]: generate_percentage(75, 50),
+      hue: generate_hue(),
+      saturation: generate_percentage(75, 50),
+      light: generate_percentage(75, 50),
       locked: false,
     },
     {
       id: nanoid(),
-      [HUE]: generate_hue(),
-      [SATURATION]: generate_percentage(75, 50),
-      [LIGHT]: generate_percentage(75, 50),
+      hue: generate_hue(),
+      saturation: generate_percentage(75, 50),
+      light: generate_percentage(75, 50),
       locked: false,
     },
     {
       id: nanoid(),
-      [HUE]: generate_hue(),
-      [SATURATION]: generate_percentage(75, 50),
-      [LIGHT]: generate_percentage(75, 50),
+      hue: generate_hue(),
+      saturation: generate_percentage(75, 50),
+      light: generate_percentage(75, 50),
       locked: false,
     },
   ]);

@@ -687,6 +687,14 @@ video {
   gap: 24px;
 }
 
+.gap-\[16px\] {
+  gap: 16px;
+}
+
+.gap-\[8px\] {
+  gap: 8px;
+}
+
 .overflow-y-hidden {
   overflow-y: hidden;
 }
@@ -752,6 +760,14 @@ video {
 
 .p-\[6px\] {
   padding: 6px;
+}
+
+.p-\[8px\] {
+  padding: 8px;
+}
+
+.p-\[10px\] {
+  padding: 10px;
 }
 
 .px-2 {
