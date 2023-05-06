@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
-import { Column_interface } from "../../constants/interfaces";
-import { determine_dark_or_light, hsl_to_rgb, rgb_to_hex } from "../../utils";
+import { Color_Column_Props } from "../../constants/interfaces";
+import { determine_dark_or_light, hsl_to_hex, hsl_to_rgb, rgb_to_hex } from "../../utils";
 import { useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
@@ -8,22 +8,16 @@ import { color_column_motion_config, fade_in_up } from "../../constants/motion_v
 import { color_column_container, color_column_menu_container } from "./styles";
 import ColorPicker from "../color-picker";
 
-const Column = ({ id, hue, saturation, light, handleChange, removeCol, locked, toggleLock, addColumn, currentCols }: Column_interface) => {
+const ColorColumn = ({ data: { id, hue, saturation, light, locked }, handle_delete, handle_edit, handle_lock }: Color_Column_Props) => {
   // Attributes for the sorting functionality
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
   // Styles for the sorting functionality
   const style = { transform: CSS.Transform.toString(transform), transition };
 
+  //This state handles displaying an svg which indicates a successful copy operation
   const [showToast, setShowToast] = useState(false);
 
-  const { r, g, b } = hsl_to_rgb(hue, saturation, light);
-
-  const color_values = {
-    HEX: rgb_to_hex(r, g, b),
-    HSL: `hsl(${hue}, ${saturation}%, ${light}%)`,
-    RGB: `rgb(${r}, ${g}, ${b})`,
-  };
-
+  //Copy to clipboard logic
   const copy_to_clipboard = (text: string) => {
     navigator.clipboard
       .writeText(text)
@@ -46,7 +40,7 @@ const Column = ({ id, hue, saturation, light, handleChange, removeCol, locked, t
     >
       <motion.div variants={fade_in_up} className={color_column_menu_container}>
         <div>
-          <ColorPicker id={id} color_values={color_values} edit_values={handleChange} />
+          <ColorPicker id={id} color_values={{ hue, saturation, light }} handle_edit={handle_edit} />
         </div>
 
         <div className={`mt-[24px] min-w-full ${light > 50 ? "text-gray-800" : "text-gray-100"}`}>
@@ -54,7 +48,7 @@ const Column = ({ id, hue, saturation, light, handleChange, removeCol, locked, t
             {/* START::Copy Button */}
             <button
               disabled={showToast}
-              onClick={() => copy_to_clipboard(color_values.HEX)}
+              onClick={() => copy_to_clipboard(hsl_to_hex(hue, saturation, light))}
               style={{ fill: determine_dark_or_light(light), stroke: determine_dark_or_light(light) }}
               className={`p-[6px] cursor-pointer rounded-md transition-colors duration-200 ${light > 60 ? "hover:bg-[#55555533]" : "hover:bg-[#eeeeee33]"}`}
             >
@@ -140,7 +134,7 @@ const Column = ({ id, hue, saturation, light, handleChange, removeCol, locked, t
             {/* START::Lock Button */}
             <button
               tabIndex={-999}
-              onClick={(event: any) => toggleLock && toggleLock(id, event)}
+              onClick={() => handle_lock(id)}
               className={`p-[6px] cursor-pointer rounded-md transition-colors duration-200 ${light > 60 ? "hover:bg-[#55555533]" : "hover:bg-[#eeeeee33]"}`}
             >
               <svg
@@ -164,8 +158,7 @@ const Column = ({ id, hue, saturation, light, handleChange, removeCol, locked, t
             {!locked && (
               <button
                 style={{ fill: determine_dark_or_light(light), stroke: determine_dark_or_light(light) }}
-                tabIndex={-999}
-                onClick={() => removeCol && removeCol(id)}
+                onClick={() => handle_delete(id)}
                 className={`p-[10px] cursor-pointer rounded-md transition-colors duration-200 ${light > 60 ? "hover:bg-[#55555533]" : "hover:bg-[#eeeeee33]"}`}
               >
                 <svg width="50px" height="50px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -186,4 +179,4 @@ const Column = ({ id, hue, saturation, light, handleChange, removeCol, locked, t
   );
 };
 
-export default Column;
+export default ColorColumn;

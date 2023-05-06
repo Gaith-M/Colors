@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import { generate_hue, generate_percentage, generate_random_colors, hexToHSL } from "../utils";
-import Column from "../components/color-column";
 import { nanoid } from "nanoid";
 import { Column_basic_info, Column_interface } from "../constants/interfaces";
 import { DndContext, closestCenter, PointerSensor, KeyboardSensor, useSensors, useSensor } from "@dnd-kit/core";
 import { arrayMove, sortableKeyboardCoordinates, SortableContext, horizontalListSortingStrategy } from "@dnd-kit/sortable";
 import { restrictToHorizontalAxis, restrictToParentElement } from "@dnd-kit/modifiers";
-import NewColumn from "../components/color-column/color-column";
+import ColorColumn from "../components/color-column";
 
 const Home = () => {
   // DnD-Kit
@@ -93,6 +92,7 @@ const Home = () => {
   }
 
 
+  // Edit Color
   function handle_change(id: string, hex: string) {
     // This function will receive the new value as HEX code
     // It will then derive HSL elements from it
@@ -130,7 +130,7 @@ const Home = () => {
       >
         <SortableContext items={cols} strategy={horizontalListSortingStrategy}>
           {cols.map((el) => (
-            <NewColumn
+            <ColorColumn
               key={el.id}
               data={el}
               handle_delete={remove_col}
@@ -142,34 +142,6 @@ const Home = () => {
       </DndContext>
     </div>
   );
-  // return (
-  //   <div className="relative w-full min-h-screen flex items-end justify-center overflow-y-hidden">
-  //     <DndContext
-  //       sensors={sensors}
-  //       collisionDetection={closestCenter}
-  //       onDragEnd={handleDragEnd}
-  //       modifiers={[restrictToHorizontalAxis, restrictToParentElement]}
-  //     >
-  //       <SortableContext items={cols} strategy={horizontalListSortingStrategy}>
-  //         {cols.map((el) => (
-  //           <Column
-  //             key={el.id}
-  //             id={el.id}
-  //             hue={el.hue}
-  //             light={el.light}
-  //             locked={el.locked}
-  //             saturation={el.saturation}
-  //             removeCol={remove_col}
-  //             toggleLock={toggle_lock}
-  //             handleChange={handle_change}
-  //             addColumn={add_col}
-  //             currentCols={cols}
-  //           />
-  //         ))}
-  //       </SortableContext>
-  //     </DndContext>
-  //   </div>
-  // );
 };
 
 export default Home;
