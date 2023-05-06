@@ -8,7 +8,7 @@ import { color_column_motion_config, fade_in_up } from "../../constants/motion_v
 import { color_column_container, color_column_menu_container } from "./styles";
 import ColorPicker from "../color-picker";
 
-const ColorColumn = ({ data: { id, hue, saturation, light, locked }, handle_delete, handle_edit, handle_lock }: Color_Column_Props) => {
+const ColorColumn = ({ data: { id, hue, saturation, light, locked }, handle_delete, handle_edit, handle_lock, render_shades }: Color_Column_Props) => {
   // Attributes for the sorting functionality
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
   // Styles for the sorting functionality
@@ -39,12 +39,10 @@ const ColorColumn = ({ data: { id, hue, saturation, light, locked }, handle_dele
       style={{ color: `hsla(${hue}, ${saturation}%, ${light}%, 1)`, backgroundColor: "currentcolor", ...style }}
     >
       <motion.div variants={fade_in_up} className={color_column_menu_container}>
-        <div>
-          <ColorPicker id={id} color_values={{ hue, saturation, light }} handle_edit={handle_edit} />
-        </div>
-
-        <div className={`mt-[24px] min-w-full ${light > 50 ? "text-gray-800" : "text-gray-100"}`}>
+        <div className="mt-[24px] min-w-full" style={{ color: determine_dark_or_light(light) }}>
           <div className="flex flex-col items-center justify-between gap-[8px]">
+            <ColorPicker id={id} color_values={{ hue, saturation, light }} handle_edit={handle_edit} />
+
             {/* START::Copy Button */}
             <button
               disabled={showToast}
@@ -98,14 +96,36 @@ const ColorColumn = ({ data: { id, hue, saturation, light, locked }, handle_dele
             </button>
             {/* END::Copy Button */}
 
+            {/* START::Shades Button */}
+            <button
+              onClick={() => render_shades(id, { hue, saturation, light })}
+              style={{ fill: determine_dark_or_light(light), stroke: determine_dark_or_light(light) }}
+              className={`p-[6px] cursor-pointer rounded-md transition-colors duration-200 ${light > 60 ? "hover:bg-[#55555533]" : "hover:bg-[#eeeeee33]"}`}
+            >
+              <svg width="35px" height="35px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+                <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+                <g id="SVGRepo_iconCarrier">
+                  {" "}
+                  <path
+                    d="M3 8.976C3 4.05476 4.05476 3 8.976 3H15.024C19.9452 3 21 4.05476 21 8.976V15.024C21 19.9452 19.9452 21 15.024 21H8.976C4.05476 21 3 19.9452 3 15.024V8.976Z"
+                    strokeWidth="1.2"
+                  ></path>{" "}
+                  <path d="M12 3V21" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"></path>{" "}
+                  <path d="M21 12L3 12" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"></path>{" "}
+                </g>
+              </svg>
+            </button>
+            {/* END::Shades Button */}
+
             {/* START::Drag Handler */}
             <button
               {...attributes}
               {...listeners}
+              style={{ fill: determine_dark_or_light(light), stroke: determine_dark_or_light(light) }}
               className={`p-[6px] cursor-move rounded-md transition-colors duration-200 ${light > 60 ? "hover:bg-[#55555533]" : "hover:bg-[#eeeeee33]"}`}
             >
               <svg
-                style={{ fill: determine_dark_or_light(light), stroke: determine_dark_or_light(light) }}
                 version="1.1"
                 id="Capa_1"
                 xmlns="http://www.w3.org/2000/svg"
@@ -116,7 +136,7 @@ const ColorColumn = ({ data: { id, hue, saturation, light, locked }, handle_dele
                 transform="rotate(90)matrix(1, 0, 0, 1, 0, 0)"
               >
                 <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-                <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round" stroke="#CCCCCC" strokeWidth="4.303991999999999"></g>
+                <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round" strokeWidth="4.303991999999999"></g>
                 <g id="SVGRepo_iconCarrier">
                   {" "}
                   <g>

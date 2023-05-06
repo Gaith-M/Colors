@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { generate_hue, generate_percentage, generate_random_colors, hexToHSL } from "../utils";
 import { nanoid } from "nanoid";
-import { Column_basic_info, Column_interface } from "../constants/interfaces";
+import { Color_Elements, Column_basic_info, Column_interface } from "../constants/interfaces";
 import { DndContext, closestCenter, PointerSensor, KeyboardSensor, useSensors, useSensor } from "@dnd-kit/core";
 import { arrayMove, sortableKeyboardCoordinates, SortableContext, horizontalListSortingStrategy } from "@dnd-kit/sortable";
 import { restrictToHorizontalAxis, restrictToParentElement } from "@dnd-kit/modifiers";
@@ -10,7 +10,6 @@ import ColorColumn from "../components/color-column";
 const Home = () => {
   // DnD-Kit
   const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
-
 
   const [cols, setCols] = useState<Column_interface[]>([
     {
@@ -36,7 +35,7 @@ const Home = () => {
     },
   ]);
 
-  
+  const [shades_window_state, set_shades_window_state] = useState<{ open: boolean; values: Color_Elements[] | null }>({ open: false, values: null });
 
   useEffect(() => {
     if (!window) return;
@@ -91,7 +90,6 @@ const Home = () => {
     setCols(cols.filter((el) => el.id !== id));
   }
 
-
   // Edit Color
   function handle_change(id: string, hex: string) {
     // This function will receive the new value as HEX code
@@ -120,6 +118,28 @@ const Home = () => {
     parent?.blur();
   }
 
+  // Shades
+  function open_shades_window(id: string, { hue, saturation, light }: Color_Elements) {
+    // Open a window inside the color
+    // add an event to other columns. when any of them are clicked, close any open instances of the shade window
+
+    // get the color values
+    // create 24 shades from it
+    // return them in an array
+    // when any of them are clicked -> set the color of the column to this color
+
+    // get all shades
+    let light_value = 0;
+    let shades = [];
+
+    while (light_value <= 100) {
+      shades.unshift({ hue, saturation, light: light_value });
+      light_value += 4;
+    }
+
+    console.log(shades);
+  }
+
   return (
     <div className="relative w-full min-h-screen flex items-end justify-center overflow-y-hidden">
       <DndContext
@@ -136,6 +156,7 @@ const Home = () => {
               handle_delete={remove_col}
               handle_lock={toggle_lock}
               handle_edit={handle_change}
+              render_shades={open_shades_window}
             />
           ))}
         </SortableContext>

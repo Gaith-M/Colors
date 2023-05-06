@@ -32,5 +32,13 @@ export interface Color_Column_Props {
   handle_edit: (id: string, hex: string) => void;
   handle_delete: (id: string) => void;
   handle_lock: (id: string) => void;
+  render_shades: (id: string, values: Color_Elements) => void;
 }
+
+export interface Color_Elements {
+  hue: number;
+  light: number;
+  saturation: number;
+}
+
 // ------------------------------

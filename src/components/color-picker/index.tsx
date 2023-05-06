@@ -5,8 +5,8 @@ const ColorPicker = ({ color_values: { hue, saturation, light }, id, handle_edit
   const HEX = hsl_to_hex(hue, saturation, light);
 
   return (
-    <label htmlFor={id + "-picker"} className="relative flex items-center justify-center">
-      <span className="uppercase text-center text-[24px] font-bold mt-[24px]" style={{ color: determine_dark_or_light(light) }}>
+    <label htmlFor={id + "-picker"} className="py-[6px] relative flex items-center justify-center transition-colors duration-200">
+      <span className="uppercase text-center text-[24px] font-bold mt-[24px] text-inherit">
         {HEX}
       </span>
       <input

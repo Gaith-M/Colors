@@ -680,6 +680,11 @@ video {
   padding-right: 0.5rem;
 }
 
+.py-\[6px\] {
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
 .text-center {
   text-align: center;
 }
@@ -731,6 +736,10 @@ video {
 .text-white {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+
+.text-inherit {
+  color: inherit;
 }
 
 .opacity-0 {
