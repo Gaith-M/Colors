@@ -35,7 +35,11 @@ const Home = () => {
     },
   ]);
 
-  const [shades_window_state, set_shades_window_state] = useState<{ open: boolean; values: Color_Elements[] | null }>({ open: false, values: null });
+  const [shades_window_state, set_shades_window_state] = useState<{ id: string | null; open: boolean; values: Color_Elements[] | null }>({
+    id: null,
+    open: false,
+    values: null,
+  });
 
   useEffect(() => {
     if (!window) return;
@@ -119,7 +123,7 @@ const Home = () => {
   }
 
   // Shades
-  function open_shades_window(id: string, { hue, saturation, light }: Color_Elements) {
+  function open_shades_window(id: string, { hue, saturation }: Color_Elements) {
     // Open a window inside the color
     // add an event to other columns. when any of them are clicked, close any open instances of the shade window
 
@@ -137,7 +141,15 @@ const Home = () => {
       light_value += 4;
     }
 
-    console.log(shades);
+    // set the state to the created shades and the id of the column which has the shades window open.
+    // set event listeners on other columns (click) which will handle closing the shades window if one of them is clicked (beside the parent column of the window)
+    set_shades_window_state({ id, open: true, values: shades });
+  }
+
+  function close_shades_window(id: string) {
+    if (id !== shades_window_state.id && shades_window_state.values && shades_window_state.values.length > 0) {
+      set_shades_window_state({ id: null, open: false, values: null });
+    }
   }
 
   return (
@@ -156,7 +168,9 @@ const Home = () => {
               handle_delete={remove_col}
               handle_lock={toggle_lock}
               handle_edit={handle_change}
-              render_shades={open_shades_window}
+              create_shades={open_shades_window}
+              shades_window_state={shades_window_state}
+              close_shades_window={close_shades_window}
             />
           ))}
         </SortableContext>

@@ -32,7 +32,9 @@ export interface Color_Column_Props {
   handle_edit: (id: string, hex: string) => void;
   handle_delete: (id: string) => void;
   handle_lock: (id: string) => void;
-  render_shades: (id: string, values: Color_Elements) => void;
+  create_shades: (id: string, values: Color_Elements) => void;
+  shades_window_state: { id: string | null; open: boolean; values: Color_Elements[] | null };
+  close_shades_window: (id: string) => void;
 }
 
 export interface Color_Elements {

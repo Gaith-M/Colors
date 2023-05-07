@@ -8,7 +8,15 @@ import { color_column_motion_config, fade_in_up } from "../../constants/motion_v
 import { color_column_container, color_column_menu_container } from "./styles";
 import ColorPicker from "../color-picker";
 
-const ColorColumn = ({ data: { id, hue, saturation, light, locked }, handle_delete, handle_edit, handle_lock, render_shades }: Color_Column_Props) => {
+const ColorColumn = ({
+  data: { id, hue, saturation, light, locked },
+  handle_delete,
+  handle_edit,
+  handle_lock,
+  create_shades,
+  shades_window_state,
+  close_shades_window,
+}: Color_Column_Props) => {
   // Attributes for the sorting functionality
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
   // Styles for the sorting functionality
@@ -37,6 +45,7 @@ const ColorColumn = ({ data: { id, hue, saturation, light, locked }, handle_dele
       {...color_column_motion_config}
       className={color_column_container}
       style={{ color: `hsla(${hue}, ${saturation}%, ${light}%, 1)`, backgroundColor: "currentcolor", ...style }}
+      onClick={() => close_shades_window(id)}
     >
       <motion.div variants={fade_in_up} className={color_column_menu_container}>
         <div className="mt-[24px] min-w-full" style={{ color: determine_dark_or_light(light) }}>
@@ -98,7 +107,7 @@ const ColorColumn = ({ data: { id, hue, saturation, light, locked }, handle_dele
 
             {/* START::Shades Button */}
             <button
-              onClick={() => render_shades(id, { hue, saturation, light })}
+              onClick={() => create_shades(id, { hue, saturation, light })}
               style={{ fill: determine_dark_or_light(light), stroke: determine_dark_or_light(light) }}
               className={`p-[6px] cursor-pointer rounded-md transition-colors duration-200 ${light > 60 ? "hover:bg-[#55555533]" : "hover:bg-[#eeeeee33]"}`}
             >
@@ -195,6 +204,23 @@ const ColorColumn = ({ data: { id, hue, saturation, light, locked }, handle_dele
           </div>
         </div>
       </motion.div>
+
+      {shades_window_state.open && shades_window_state.id === id && (
+        <div className="absolute min-w-full min-h-full top-0 left-0 flex flex-col">
+          {shades_window_state.values?.map(({ hue, saturation, light }) => {
+            let hex = hsl_to_hex(hue, saturation, light);
+            return (
+              <div
+                key={hex}
+                style={{ backgroundColor: hex, color: determine_dark_or_light(light) }}
+                className="flex-1 flex items-center justify-center font-bold uppercase cursor-pointer"
+              >
+                {hex}
+              </div>
+            );
+          })}
+        </div>
+      )}
     </motion.div>
   );
 };
