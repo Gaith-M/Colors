@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { AnimatePresence, motion, useAnimate, stagger } from "framer-motion";
 import { Color_Column_Props } from "../../constants/interfaces";
 import { determine_dark_or_light, hsl_to_hex, hsl_to_rgb, rgb_to_hex } from "../../utils";
 import { useState } from "react";
@@ -8,6 +8,8 @@ import { color_column_motion_config, fade_in_up } from "../../constants/motion_v
 import { color_column_container, color_column_menu_container } from "./styles";
 import ColorPicker from "../color-picker";
 
+const shade_element_stagger = stagger(0.1, {startDelay: 0.05})
+
 const ColorColumn = ({
   data: { id, hue, saturation, light, locked },
   handle_delete,
@@ -16,6 +18,7 @@ const ColorColumn = ({
   create_shades,
   shades_window_state,
   close_shades_window,
+  select_shades,
 }: Color_Column_Props) => {
   // Attributes for the sorting functionality
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
@@ -205,22 +208,31 @@ const ColorColumn = ({
         </div>
       </motion.div>
 
-      {shades_window_state.open && shades_window_state.id === id && (
-        <div className="absolute min-w-full min-h-full top-0 left-0 flex flex-col">
-          {shades_window_state.values?.map(({ hue, saturation, light }) => {
-            let hex = hsl_to_hex(hue, saturation, light);
-            return (
-              <div
-                key={hex}
-                style={{ backgroundColor: hex, color: determine_dark_or_light(light) }}
-                className="flex-1 flex items-center justify-center font-bold uppercase cursor-pointer"
-              >
-                {hex}
-              </div>
-            );
-          })}
-        </div>
-      )}
+      <AnimatePresence>
+        {shades_window_state.open && shades_window_state.id === id && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ type: "tween", duration: 0.5, delay: 0.1}}
+            className="absolute min-w-full min-h-full top-0 left-0 flex flex-col"
+          >
+            {shades_window_state.values?.map(({ hue, saturation, light }) => {
+              let hex = hsl_to_hex(hue, saturation, light);
+              return (
+                <div
+                  key={hex}
+                  style={{ backgroundColor: hex, color: determine_dark_or_light(light) }}
+                  className="flex-1 flex items-center justify-center font-bold uppercase cursor-pointer group"
+                  onClick={() => select_shades(id, { hue, saturation, light })}
+                >
+                  <span className="opacity-0 transition-opacity duration-150 group-hover:opacity-100">{hex}</span>
+                </div>
+              );
+            })}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 };

@@ -138,7 +138,7 @@ const Home = () => {
 
     while (light_value <= 100) {
       shades.unshift({ hue, saturation, light: light_value });
-      light_value += 4;
+      light_value += 4.5;
     }
 
     // set the state to the created shades and the id of the column which has the shades window open.
@@ -150,6 +150,23 @@ const Home = () => {
     if (id !== shades_window_state.id && shades_window_state.values && shades_window_state.values.length > 0) {
       set_shades_window_state({ id: null, open: false, values: null });
     }
+  }
+
+  // Select Shade
+  function select_shades(id: string, shade_value: Color_Elements) {
+    // User can select the desired shade
+    // it (the shade) will become the color of the column
+    // Next the shades menu should close
+
+    // The function will receive the shade as HSL
+    // It will receive the column ID too
+    // update state
+    const col_index = cols.findIndex((el) => el.id == id);
+    let target_color = cols[col_index];
+
+    setCols([...cols.slice(0, col_index), { ...target_color, ...shade_value }, ...cols.slice(col_index + 1)]);
+    // Close shades window
+    set_shades_window_state({ id: null, open: false, values: null });
   }
 
   return (
@@ -171,6 +188,7 @@ const Home = () => {
               create_shades={open_shades_window}
               shades_window_state={shades_window_state}
               close_shades_window={close_shades_window}
+              select_shades={select_shades}
             />
           ))}
         </SortableContext>

@@ -35,6 +35,7 @@ export interface Color_Column_Props {
   create_shades: (id: string, values: Color_Elements) => void;
   shades_window_state: { id: string | null; open: boolean; values: Color_Elements[] | null };
   close_shades_window: (id: string) => void;
+  select_shades: (id: string, shade_values: Color_Elements) => void;
 }
 
 export interface Color_Elements {

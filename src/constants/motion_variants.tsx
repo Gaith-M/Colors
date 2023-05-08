@@ -2,7 +2,7 @@ export const color_column_motion_config = {
   whileHover: "hover",
   initial: "rest",
   animate: "rest",
-  transition: { ease: "easeInOut", type: "tween" },
+  transition: { ease: "easeInOut", type: "tween", staggerChildren: 0.1 },
 };
 
 export const fade_in_up = {
