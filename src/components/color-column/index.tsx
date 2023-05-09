@@ -1,6 +1,6 @@
-import { AnimatePresence, motion, useAnimate, stagger } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { Color_Column_Props } from "../../constants/interfaces";
-import { determine_dark_or_light, hsl_to_hex, hsl_to_rgb, rgb_to_hex } from "../../utils";
+import { determine_dark_or_light, hsl_to_hex } from "../../utils";
 import { useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
@@ -8,7 +8,6 @@ import { color_column_motion_config, fade_in_up } from "../../constants/motion_v
 import { color_column_container, color_column_menu_container } from "./styles";
 import ColorPicker from "../color-picker";
 
-const shade_element_stagger = stagger(0.1, {startDelay: 0.05})
 
 const ColorColumn = ({
   data: { id, hue, saturation, light, locked },
@@ -19,6 +18,10 @@ const ColorColumn = ({
   shades_window_state,
   close_shades_window,
   select_shades,
+  create_column_button,
+  destroy_column_button,
+  position,
+  show_create_button
 }: Color_Column_Props) => {
   // Attributes for the sorting functionality
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
@@ -42,6 +45,17 @@ const ColorColumn = ({
       .catch((err) => console.log(err));
   };
 
+  let left_button_position = `translate(-50%, calc(50vh - 20px))`;
+  let right_button_position = `translate(25%, calc(50vh - 20px))`;
+
+  if (position.first) {
+    left_button_position = `translate( 10px, calc(50vh - 20px))`;
+  }
+
+  if (position.last) {
+    right_button_position = `translate( -10px, calc(50vh - 20px))`;
+  }
+
   return (
     <motion.div
       ref={setNodeRef}
@@ -50,6 +64,55 @@ const ColorColumn = ({
       style={{ color: `hsla(${hue}, ${saturation}%, ${light}%, 1)`, backgroundColor: "currentcolor", ...style }}
       onClick={() => close_shades_window(id)}
     >
+      {/* Left side bar and button */}
+      <div onMouseEnter={() => create_column_button(id, "left")} onMouseLeave={destroy_column_button} className="absolute w-[30px] h-full z-10 top-0 left-0">
+        {show_create_button?.open && show_create_button.col_id === id && show_create_button.side === 'left' && position.first && (
+          <button
+            className="w-[40px] h-[40px] rounded-full flex items-center justify-center bg-[#e3e3e3] border shadow-md"
+            style={{ transform: left_button_position }}
+          >
+            <svg width="25px" height="25px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#000000" transform="rotate(0)">
+              <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+              <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+              <g id="SVGRepo_iconCarrier">
+                <title></title>
+                <g id="Complete">
+                  <g data-name="add" id="add-2">
+                    <g>
+                      <line fill="none" stroke="#000000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" x1="12" x2="12" y1="19" y2="5"></line>
+                      <line fill="none" stroke="#000000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" x1="5" x2="19" y1="12" y2="12"></line>
+                    </g>
+                  </g>
+                </g>
+              </g>
+            </svg>
+          </button>
+        )}
+
+        {show_create_button?.open && show_create_button.col_id === id && show_create_button.side === 'left' && !position.first && !position.last && (
+          <button
+            className="w-[40px] h-[40px] rounded-full flex items-center justify-center bg-[#e3e3e3] border shadow-md"
+            style={{ transform: left_button_position }}
+          >
+            <svg width="25px" height="25px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#000000" transform="rotate(0)">
+              <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+              <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+              <g id="SVGRepo_iconCarrier">
+                <title></title>
+                <g id="Complete">
+                  <g data-name="add" id="add-2">
+                    <g>
+                      <line fill="none" stroke="#000000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" x1="12" x2="12" y1="19" y2="5"></line>
+                      <line fill="none" stroke="#000000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" x1="5" x2="19" y1="12" y2="12"></line>
+                    </g>
+                  </g>
+                </g>
+              </g>
+            </svg>
+          </button>
+        )}
+      </div>
+
       <motion.div variants={fade_in_up} className={color_column_menu_container}>
         <div className="mt-[24px] min-w-full" style={{ color: determine_dark_or_light(light) }}>
           <div className="flex flex-col items-center justify-between gap-[8px]">
@@ -208,14 +271,63 @@ const ColorColumn = ({
         </div>
       </motion.div>
 
+      {/* Right side bar and button */}
+      <div onMouseEnter={() => create_column_button(id, "right")} onMouseLeave={destroy_column_button} className="absolute w-[30px] h-full z-10 top-0 right-0">
+        {show_create_button?.open && show_create_button.col_id === id && show_create_button.side === 'right' && position.last && (
+          <button
+            className="w-[40px] h-[40px] rounded-full flex items-center justify-center bg-[#e3e3e3] border shadow-md"
+            style={{ transform: 'translate(-60%, calc(50vh - 20px))' }}
+          >
+            <svg width="25px" height="25px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#000000" transform="rotate(0)">
+              <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+              <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+              <g id="SVGRepo_iconCarrier">
+                <title></title>
+                <g id="Complete">
+                  <g data-name="add" id="add-2">
+                    <g>
+                      <line fill="none" stroke="#000000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" x1="12" x2="12" y1="19" y2="5"></line>
+                      <line fill="none" stroke="#000000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" x1="5" x2="19" y1="12" y2="12"></line>
+                    </g>
+                  </g>
+                </g>
+              </g>
+            </svg>
+          </button>
+        )}
+
+        {show_create_button?.open && show_create_button.col_id === id && show_create_button.side === 'right' && !position.first && !position.last && (
+          <button
+            className="w-[40px] h-[40px] rounded-full flex items-center justify-center bg-[#e3e3e3] border shadow-md"
+            style={{ transform: right_button_position }}
+          >
+            <svg width="25px" height="25px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#000000" transform="rotate(0)">
+              <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+              <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+              <g id="SVGRepo_iconCarrier">
+                <title></title>
+                <g id="Complete">
+                  <g data-name="add" id="add-2">
+                    <g>
+                      <line fill="none" stroke="#000000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" x1="12" x2="12" y1="19" y2="5"></line>
+                      <line fill="none" stroke="#000000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" x1="5" x2="19" y1="12" y2="12"></line>
+                    </g>
+                  </g>
+                </g>
+              </g>
+            </svg>
+          </button>
+        )}
+      </div>
+
       <AnimatePresence>
         {shades_window_state.open && shades_window_state.id === id && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ type: "tween", duration: 0.5, delay: 0.1}}
-            className="absolute min-w-full min-h-full top-0 left-0 flex flex-col"
+            transition={{ type: "tween", duration: 0.5, delay: 0.1 }}
+            className="absolute z-50 min-w-full min-h-full top-0 left-0 flex flex-col"
           >
             {shades_window_state.values?.map(({ hue, saturation, light }) => {
               let hex = hsl_to_hex(hue, saturation, light);

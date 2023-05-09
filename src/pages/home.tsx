@@ -35,6 +35,8 @@ const Home = () => {
     },
   ]);
 
+  const [show_create_button, set_show_create_button] = useState<{ open: true; col_id: string, side: "left" | "right" } | null>(null);
+
   const [shades_window_state, set_shades_window_state] = useState<{ id: string | null; open: boolean; values: Color_Elements[] | null }>({
     id: null,
     open: false,
@@ -47,10 +49,14 @@ const Home = () => {
     return () => document.removeEventListener("keypress", event_handler);
   }, [cols]);
 
+  // FUNCTIONS::
+
+  // Generate Random Colors
   function event_handler(e: KeyboardEvent) {
     if (e.code === "Space") setCols(generate_random_colors(cols));
   }
 
+  // Drag
   function handleDragEnd(event: any) {
     const { active, over } = event;
 
@@ -169,6 +175,29 @@ const Home = () => {
     set_shades_window_state({ id: null, open: false, values: null });
   }
 
+  // Create Column Button
+  // The logic is as follows:
+  // create_column_button will be responsible for creating the create button. it will be triggered on mouse enter
+  // destroy_column_button will remove it from dom
+  // create_new_column will add a new column to the dom. the color of this column will be based on the adjacent column(s)
+  function create_column_button(id: string, side: "left" | "right") {
+    // The position of the button will be determined based on the location of the column within the area and the previous/next column based on side hovered
+    set_show_create_button({ open: true, col_id: id, side });
+  }
+
+  function destroy_column_button() {
+    set_show_create_button(null);
+  }
+
+  function get_column_pos_in_state(id: string, length: number) {
+    const col_index = cols.findIndex((el) => el.id == id);
+
+    return {
+      first: col_index === 0,
+      last: col_index === length,
+    };
+  }
+
   return (
     <div className="relative w-full min-h-screen flex items-end justify-center overflow-y-hidden">
       <DndContext
@@ -182,6 +211,7 @@ const Home = () => {
             <ColorColumn
               key={el.id}
               data={el}
+              position={get_column_pos_in_state(el.id, cols.length - 1)}
               handle_delete={remove_col}
               handle_lock={toggle_lock}
               handle_edit={handle_change}
@@ -189,6 +219,9 @@ const Home = () => {
               shades_window_state={shades_window_state}
               close_shades_window={close_shades_window}
               select_shades={select_shades}
+              create_column_button={create_column_button}
+              destroy_column_button={destroy_column_button}
+              show_create_button={show_create_button}
             />
           ))}
         </SortableContext>
