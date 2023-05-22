@@ -23,3 +23,6 @@ Left to do:
 - Add color rearrange functionality so users can place colors in whichever order they want
 
 By this the first feature would be completed
+
+
+I've put this project on hold for the time being.
